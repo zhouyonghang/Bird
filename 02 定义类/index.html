@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<style type="text/css">
+		* {
+			margin: 0;
+			padding: 0;
+		}
+		canvas {
+			display: block;
+			margin: 0 auto;
+			border: 1px solid red;
+		}
+	</style>
+</head>
+<body>
+	<canvas id="myCanvas" width="360" height="512"></canvas>
+	<script type="text/javascript" src="js/Pipe.js"></script>
+	<script type="text/javascript" src="js/Game.js"></script>
+	<script type="text/javascript" src="js/Bird.js"></script>
+	<script type="text/javascript" src="js/Background.js"></script>
+	<script type="text/javascript">
+
+
+	// 盛放图片的数组
+	var imgArr = ["images/bg_day.png", "images/bird0_0.png", "images/bird0_1.png", "images/bird0_2.png", "images/land.png", "images/pipe_down.png", "images/pipe_up.png"]
+
+	// 封装一个函数，接收两个参数，第一个参数是盛放图片的数组，第二个参数是回调函数
+	// 当所有的图片加载完毕之后，执行的回调函数
+
+
+	// 使用loadImage
+	loadImage(imgArr, function(img) {
+		// 获取canvas
+		var canvas = document.getElementById("myCanvas");
+		// 获取画笔
+		var ctx = canvas.getContext("2d");
+
+		// console.log(img);
+
+		// 初始化bird
+		var bird = new Bird(img.slice(1, 4), 100, 100);
+		// 初始化pipe
+		var pipe = new Pipe(img[5], img[6], 4, 360);
+		// 初始化land
+		var land = new Background(img[4], 4, 0, 400);
+		// 初始化mountain
+		var mountain = new Background(img[0], 2, 0, 0);
+
+		// 开始游戏
+		window.g = new Game(ctx, bird, pipe, land, mountain);
+
+	})
+
+
+
+	/**
+	 * loadImage 加载图片的方法
+	 * @imgArr 图片数组
+	 * @callBack 当图片加载完毕之后 执行的回调函数
+	 **/
+	function loadImage(imgArr, callBack) {
+		// 定义信号量
+		var idx = 0;
+		// 定义数组，用于盛放所有加载完毕之后的图片
+		var loadImageArr = [];
+		imgArr.forEach(function(value, index) {
+			// 创建图片元素
+			var img = new Image();
+			// 设置路径
+			img.src = value;
+			// 设置load事件
+			img.onload = function() {
+				// 改变信号量
+				idx++;
+				// 每加载一张图片要存储起来
+				// 为了保证图片的加载顺序，使用index
+				loadImageArr[index] = this;
+				// 判断idx与数组的长度
+				if (idx === imgArr.length) {
+					// 当图片加载完毕之后执行回调函数
+					callBack(loadImageArr);
+				}
+			}
+		})
+	}
+
+
+	</script>
+</body>
+</html>

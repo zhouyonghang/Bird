@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<style type="text/css">
+		* {
+			margin: 0;
+			padding: 0;
+		}
+		canvas {
+			display: block;
+			margin: 0 auto;
+			border: 1px solid red;
+		}
+	</style>
+</head>
+<body>
+	<canvas id="myCanvas" width="1000" height="600"></canvas>
+	<script type="text/javascript">
+	// 获取元素
+	var canvas = document.getElementById("myCanvas");
+
+	// 获取画笔
+	var ctx = canvas.getContext("2d");
+
+
+	// 改变填充色
+	// ctx.fillStyle = "orange";
+	// 填充矩形
+	// ctx.fillRect(0, 0, 100, 100);
+
+	// 改变融合方式
+	// ctx.globalCompositeOperation = "source-in";
+
+	// 改变填充色
+	// ctx.fillStyle = "blue";
+	// 填充矩形
+	// ctx.fillRect(50, 50, 100, 100);
+
+	var x = 200;
+	// 绘制一个圆
+	function drawCircle(x, y, r) {
+		// 开启路径
+		ctx.beginPath();
+		// 绘制弧
+		ctx.arc(x, y, r, 0, Math.PI * 2);
+		// 闭合路径
+		ctx.closePath();
+		// 描边
+		ctx.stroke();
+	}
+
+	// 绘制线段
+	function line(x1, y1, x2, y2) {
+		// 开启路径
+		ctx.beginPath();
+		// 移动画笔到某个位置
+		ctx.moveTo(x1, y1);
+		ctx.lineTo(x2, y2);
+		// 闭合路径
+		ctx.closePath();
+		// 描边
+		ctx.stroke();
+	}
+
+	// drawCircle(200, 300, 100);
+	// line(800, 110, 600, 450);
+
+	// ctx.globalCompositeOperation = "source-in";
+	// var imgData = ctx.getImageData(0, 0, 1000, 600);
+	// console.log(imgData);
+	// 开启定时器
+	var tiemr = setInterval(function() {
+		// 清屏
+		ctx.clearRect(0, 0, 1000, 600);
+		// 移动
+		x += 2;
+		// 保存状态
+		ctx.save();
+		// 渲染
+		drawCircle(x, 300, 100);
+		// 改变融合方式
+		ctx.globalCompositeOperation = "source-in";
+		line(800, 110, 600, 450);
+		// 恢复状态
+		ctx.restore();
+
+		// 获取像素信息
+		var imgData = ctx.getImageData(0, 0, 1000, 600);
+		for (var i = 0; i < imgData.data.length; i++) {
+			if (imgData.data[i]) {
+				console.log("撞到了");
+				return;
+			}
+		}
+	}, 20)
+
+
+	</script> 
+</body>
+</html>

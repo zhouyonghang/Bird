@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<style type="text/css">
+		* {
+			margin: 0;
+			padding: 0;
+		}
+		body {
+			text-align: center;
+		}
+		canvas {
+			border: 1px solid blue;
+		}
+	</style>
+</head>
+<body>
+	<canvas id="myCanvas" width="1000" height="600"></canvas>
+	<script type="text/javascript">
+		// 获取元素
+		var myCanvas = document.getElementById("myCanvas");
+		// 获取画笔
+		var ctx = myCanvas.getContext("2d");
+
+		// 改变融合方式
+		// ctx.globalCompositeOperation = "source-over"
+		// ctx.globalCompositeOperation = "destination-over";
+		// ctx.fillRect(0, 0, 100, 100);
+		// ctx.globalCompositeOperation = "source-in";
+		// ctx.fillStyle = "blue"
+		// ctx.fillRect(50, 50, 100, 100);
+
+		// ctx.lineWidth = 20;
+
+		// 定义圆心x
+		var x = 200;
+
+		// 绘制圆
+		function drawCircle() {
+			ctx.beginPath();
+			ctx.arc(x, 250, 147.5, 0, Math.PI * 2, false);
+			ctx.closePath();
+			ctx.stroke();
+		}
+
+
+		// 绘制线
+		function drawLine() {
+			ctx.beginPath();
+			ctx.moveTo(899, 7);
+			ctx.lineTo(650, 550);
+			ctx.closePath();
+			ctx.stroke();
+		}
+
+		var timer = setInterval(function() {
+			x += 2;
+		    ctx.clearRect(0, 0, 1000, 600);
+			// 保存此时的状态
+		    ctx.save();
+			drawLine();
+			// 这里改变融合方式  一定要保证融合的改变一定在第一个图像绘制完成之后 第二个图像绘制之前设置
+			ctx.globalCompositeOperation = "source-in";
+			drawCircle();
+			// 恢复 
+			ctx.restore();
+			// 获取当前的canvas上的所有像素
+			var imgData = ctx.getImageData(0, 0, 1000, 600);
+			// 挨个遍历imgData.data中的每一项 如果发现有一个不是0 说明有交互区域
+			for(var i = 0; i < imgData.data.length; i++) {
+				if(imgData.data[i]) {
+					clearInterval(timer);
+					break;
+				}
+			}
+			drawCircle();
+			drawLine();
+		}, 20)
+	</script>
+</body>
+</html>

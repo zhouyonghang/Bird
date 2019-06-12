@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+<body>
+	<script type="text/javascript">
+	/**
+	 * 游戏分析:
+	 *	当前游戏就是一只鸟不停的穿越管子，同时管子和背景（地面和山）往后撤
+	 *	地面和管子移动速度是相同的，但是远处的山移动速度比较慢
+	 * 	我们决定使用面向对象的方式来进行书写
+	 *  
+	 * 继续分析:
+	 *	当前游戏可以分为几个类:
+	 *		鸟类、管子类、背景类（地面和远处的山）、游戏类
+	 *
+	 *	当前游戏需要很多图片,所需要的图片有: ["images/bg_day.png", "images/bird0_0.png", "images/
+	 * bird0_1.png", "images/bird0_2.png", "images/land.png", "images/pipe_down.png", "images/
+	 * pipe_up.png"]
+	 *
+	 **/
+
+	// 盛放图片的数组
+	var imgArr = ["images/bg_day.png", "images/bird0_0.png", "images/bird0_1.png", "images/bird0_2.png", "images/land.png", "images/pipe_down.png", "images/pipe_up.png"]
+
+	// 封装一个函数，接收两个参数，第一个参数是盛放图片的数组，第二个参数是回调函数
+	// 当所有的图片加载完毕之后，执行的回调函数
+
+
+	// 使用loadImage
+	loadImage(imgArr, function(img) {
+		console.log(img);
+
+		// 开始游戏
+	})
+
+
+
+	/**
+	 * loadImage 加载图片的方法
+	 * @imgArr 图片数组
+	 * @callBack 当图片加载完毕之后 执行的回调函数
+	 **/
+	function loadImage(imgArr, callBack) {
+		// 定义信号量
+		var idx = 0;
+		// 定义数组，用于盛放所有加载完毕之后的图片
+		var loadImageArr = [];
+		imgArr.forEach(function(value, index) {
+			// 创建图片元素
+			var img = new Image();
+			// 设置路径
+			img.src = value;
+			// 设置load事件
+			img.onload = function() {
+				// 改变信号量
+				idx++;
+				// 每加载一张图片要存储起来
+				// 为了保证图片的加载顺序，使用index
+				loadImageArr[index] = this;
+				// 判断idx与数组的长度
+				if (idx === imgArr.length) {
+					// 当图片加载完毕之后执行回调函数
+					callBack(loadImageArr);
+				}
+			}
+		})
+	}
+
+
+	</script>
+</body>
+</html>
